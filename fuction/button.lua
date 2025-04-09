@@ -13,7 +13,11 @@ function buttons.draw(show_buttons, x, y, largura_botao, largura_botao_base, alt
         end
         if opacao2.hit then
             show_message2 = not show_message2
+          if show_message1 then
+            show_message1 = true
+          else 
             show_message1 = false
+          end
         end
         if opacao3.hit then
             love.event.quit(0)
