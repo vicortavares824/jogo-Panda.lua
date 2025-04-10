@@ -106,7 +106,7 @@ end
 function love.load()
   world = wf.newWorld(0,500)
   cam = camera()
-  sons(jogo.sons,true)
+  sons(jogo.sons,true,true)
     player.animation = {}
     player.grid = anim8.newGrid(64,64,player.spLeft:getWidth(),player.spLeft:getHeight())
     player.animation.left = anim8.newAnimation(player.grid('2-7',1),0.2)
@@ -187,6 +187,7 @@ function love.update(dt)
     velx = player.speed
     player.anim = player.animation.right
     player.lado = player.spRiht
+    sons(jogo.sons,false,"andar")
   end
   isMove = true
 elseif LK.isDown("left") then
@@ -195,15 +196,20 @@ elseif LK.isDown("left") then
     velx = -player.speed
     player.anim = player.animation.left
     player.lado = player.spLeft
+    sons(jogo.sons,false,"andar")
   end
   isMove = true
 end
+
 
 
     player.collider:setLinearVelocity(velx,currentVelY)
   end
   if not isMove then
     player.anim:gotoFrame(2)
+    if jogo.exibirMensagem1 then
+      sons(jogo.sons,false,"para")
+    end
   end
   world:update(dt)
   player.x = player.collider:getX()
@@ -235,9 +241,13 @@ function love.draw()
     jogo.animacaoFundo:draw(jogo.imagemFundo, 0, 0, 0, escala, escala)
   end
   
-  if LK.isDown("up", "space") and player.jumpCooldown <= 0 then
-    player.collider:applyLinearImpulse(0, -200) -- Aumente a força do pulo
-    player.jumpCooldown = 1 -- Define o cooldown para 0.5 segundos
+  if LK.isDown("up", "space") then
+    if player.jumpCooldown <= 0 then
+      sons(jogo.sons,false,"pular")
+        player.collider:applyLinearImpulse(0, -200) -- Aplica o impulso para o pulo
+        player.jumpCooldown = 1 -- Define o cooldown para o pulo
+       
+      end
   end
 
   if jogo.exibirMensagem2 then
@@ -254,7 +264,7 @@ function love.draw()
     jogo.exibirBotoes = not jogo.exibirMensagem2
   end
    if jogo.exibirMensagem1 then
- 
+    sons(jogo.sons,false,nil)
     jogo.escala = math.max(jogo.mapLargura, jogo.mapAltura)
     cam:attach()
     LG.push() -- Salva o estado atual da matriz de transformação
